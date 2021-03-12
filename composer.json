@@ -2,17 +2,17 @@
     "type": "project",
     "license": "proprietary",
     "require": {
-        "php": "^7.2.5",
+        "php": "^8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "sensio/framework-extra-bundle": "^5.5",
-        "symfony/console": "5.0.*",
-        "symfony/dotenv": "5.0.*",
+        "symfony/console": "5.2.*",
+        "symfony/dotenv": "5.2.*",
         "symfony/flex": "^1.3.1",
-        "symfony/framework-bundle": "5.0.*",
+        "symfony/framework-bundle": "5.2.*",
         "symfony/orm-pack": "^1.0",
         "symfony/swiftmailer-bundle": "^3.4",
-        "symfony/yaml": "5.0.*"
+        "symfony/yaml": "5.2.*"
     },
     "require-dev": {
     },
@@ -36,6 +36,7 @@
         "paragonie/random_compat": "2.*",
         "symfony/polyfill-ctype": "*",
         "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php80": "*",
         "symfony/polyfill-php72": "*",
         "symfony/polyfill-php71": "*",
         "symfony/polyfill-php70": "*",
@@ -59,7 +60,7 @@
     "extra": {
         "symfony": {
             "allow-contrib": false,
-            "require": "5.0.*"
+            "require": "5.2.*"
         }
     }
 }
