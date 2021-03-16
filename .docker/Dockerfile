@@ -1,11 +1,13 @@
 FROM php:8.0-fpm
 
-# set main params
-ENV APP_HOME /var/www/html
-ENV USERNAME=www
-WORKDIR $APP_HOME
+# Set workdir
+WORKDIR /var/www/
 
-# install dependencies
+# Args
+ARG user
+ARG uid
+
+# Install dependencies
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
         htop \
         vim \
@@ -25,6 +27,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-reco
         libpng-dev \
         libxml2-dev \
         libssl-dev \
+        libonig-dev \
         libpq-dev \
         libwebp-dev \
         libzip-dev
@@ -44,16 +47,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 RUN curl -sS https://get.symfony.com/cli/installer | bash && \
 mv /root/.symfony/bin/symfony /usr/local/bin/symfony
 
-# Add user for Symfony application
-RUN groupadd -g 1000 $USERNAME
-RUN useradd -u 1000 -ms /bin/bash -g $USERNAME $USERNAME
-
-# Copy existing application directory permissions
-COPY --chown=$USERNAME:$USERNAME . $APP_HOME
+# Create user to run composer and symfony commands
+RUN useradd -G www-data,root -u $uid -d /home/$user $user && \
+mkdir -p /home/$user/.composer && \
+mkdir -p /home/$user/.symfony && \
+chown -R $user:$user /home/$user
 
 # Change current user to www
-USER $USERNAME
-
-# Expose port 9000 and start php-fpm server
-EXPOSE 9000
-CMD ["php-fpm"]
+USER $user

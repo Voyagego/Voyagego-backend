@@ -1,20 +1,21 @@
-version: '3'
+version: '3.7'
 services:
 
   #PHP Service
   php8-app:
     build:
+      args:
+        user: www-app
+        uid: 1000
       context: .
       dockerfile: .docker/Dockerfile
     image: app-voyagego #custom image
-    container_name: php8-app
+    container_name: php8_app
     restart: always
-    environment:
-      SERVICE_NAME: php8-service
-      SERVICE_TAGS: dev
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/
       - ./.docker/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./.docker/www.conf:/usr/local/etc/php/conf.d/www.conf
     networks:
       - network-nginx
       - network-db-postgres
@@ -24,13 +25,14 @@ services:
     build:
       context: .
       dockerfile: .docker/nginx/Dockerfile
+    image: webserver-nginx
     container_name: webserver_nginx
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
-      - ./:/var/www/html
+      - ./:/var/www/
       - ./.docker/nginx/app.conf:/etc/nginx/conf.d/app.conf:ro
     depends_on:
       - db-postgres
@@ -40,17 +42,15 @@ services:
 
   #Postgres database service
   db-postgres:
-    image: postgres:13
-    container_name: postgress_db
+    image: postgres:13.2-alpine
+    container_name: postgres_db
     restart: always
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_DB: yoyagego
-      POSTGRES_USER: voyagegouser
-      POSTGRES_PASSWORD: P@ss@pp
-      SERVICE_TAGS: dev
-      SERVICE_NAME: postgres
+      POSTGRES_DB: voyagego
+      POSTGRES_USER: voyagego_admin
+      POSTGRES_PASSWORD: Passwd
     volumes:
       - db-data:/var/lib/postgresql/data
     networks:
